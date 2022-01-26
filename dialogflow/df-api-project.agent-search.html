@@ -1,0 +1,75 @@
+<!--
+  npm i
+  node -r dotenv/config your_script.js
+  # keys in .env
+-->
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script>
+  /**
+   * Sample JavaScript code for dialogflow.projects.agent.search
+   * See instructions for running APIs Explorer code samples locally:
+   * https://developers.google.com/explorer-help/guides/code_samples#javascript
+   *
+   * FOR THIS EXAMPLE: https://cloud.google.com/dialogflow/es/docs/reference/rest/v2/projects.agent/search?apix=true
+   */
+
+  function authenticate() {
+    return gapi.auth2
+      .getAuthInstance()
+      .signIn({
+        scope:
+          "https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/dialogflow",
+      })
+      .then(
+        function () {
+          console.log("Sign-in successful");
+        },
+        function (err) {
+          console.error("Error signing in", err);
+        }
+      );
+  }
+  function loadClient() {
+    // /*###Thi*/ console.log('client loaded!');
+    gapi.client.setApiKey(process.env.API_KEY); // df-agent-list
+    // gapi.client.setApiKey(process.env.API_KEY_IDETA_TRHS); // ideta trhs
+    return gapi.client
+      .load("https://dialogflow.googleapis.com/$discovery/rest?version=v2")
+      .then(
+        function () {
+          console.log("GAPI client loaded for API");
+        },
+        function (err) {
+          console.error("Error loading GAPI client for API", err);
+        }
+      );
+  }
+  // Make sure the client is loaded and sign-in is complete before calling this method.
+  function execute() {
+    /*###Thi*/ console.log("gapi: ", gapi);
+
+    return gapi.client.dialogflow.projects.agent
+      .search({
+        parent: "projects/-",
+      })
+      .then(
+        function (response) {
+          // Handle the results here (response.result has the parsed body).
+          console.log("Response", response);
+        },
+        function (err) {
+          console.error("Execute error", err);
+        }
+      );
+  }
+  gapi.load("client:auth2", function () {
+    gapi.auth2.init({
+      client_id: process.env.CLIENT_ID,
+      // client_id: process.env.CLIENT_ID_IDETA_TRHS
+    });
+  });
+</script>
+
+<button onclick="authenticate().then(loadClient)">Authorize and load</button>
+<button onclick="execute()">Load list of agents</button>

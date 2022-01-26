@@ -1,0 +1,70 @@
+<!--
+  CHECK CLIENT_ID IN .env FILE
+-->
+
+<!--
+  HTML API
+  https://developers.google.com/identity/gsi/web/guides/migration#popup-mode
+
+  OLD WAY: simple-signin.html
+-->
+
+<div
+  id="g_id_onload"
+  data-client_id="YOUR_CLIENT_ID"
+  data-context="signin"
+  data-ux_mode="popup"
+  data-auto_prompt="false"
+  data-callback="handleCredentialResponse"
+  data-auto_select="true"
+  data-login_uri="http://localhost:5500/gsi_simple_html_api.html"
+></div>
+
+<div
+  class="g_id_signin"
+  data-type="standard"
+  data-shape="pill"
+  data-theme="outline"
+  data-text="signin_with"
+  data-size="large"
+  data-locale="en-US"
+  data-logo_alignment="left"
+></div>
+
+<div id="content"></div>
+
+<!-- <script>
+  function onSignIn(response) {
+    /*###Thi*/ console.log("googleUser: ", response);
+    var p = document.createElement("p");
+    var credentialResponse = JSON.stringify(response, null, 4);
+    p.innerHTML = credentialResponse;
+    document.getElementById("content").appendChild(p);
+  }
+</script> -->
+
+<!--
+  Handle credential responses with JavaScript functions
+  https://developers.google.cn/identity/gsi/web/guides/handle-credential-responses-js-functions
+-->
+<script>
+  function handleCredentialResponse(response) {
+    // decodeJwtResponse() is a custom function defined by you
+    // to decode the credential response.
+    const responsePayload = decodeJwtResponse(response.credential);
+
+    console.log("ID: " + responsePayload.sub);
+    console.log("Full Name: " + responsePayload.name);
+    console.log("Given Name: " + responsePayload.given_name);
+    console.log("Family Name: " + responsePayload.family_name);
+    console.log("Image URL: " + responsePayload.picture);
+    console.log("Email: " + responsePayload.email);
+
+    var p = document.createElement("p");
+    var credentialResponse = JSON.stringify(responsePayload, null, 4);
+    p.innerHTML = credentialResponse;
+    document.getElementById("content").appendChild(p);
+  }
+</script>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
