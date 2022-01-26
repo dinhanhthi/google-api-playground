@@ -1,4 +1,4 @@
-# google-dialogflow-api-playground
+# Google API Playground
 
 My playground for Google's APIs.
 
