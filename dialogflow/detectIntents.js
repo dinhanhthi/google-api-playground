@@ -1,24 +1,38 @@
-// npm i
-// node -r dotenv/config your_script.js
-// # keys in .env
+/**
+ * Source: https://github.com/googleapis/nodejs-dialogflow#using-the-client-library
+ * SDK:
+ *  - (new) https://cloud.google.com/nodejs/docs/reference/dialogflow/latest/dialogflow/v2.sessionsclient#_google_cloud_dialogflow_v2_SessionsClient_detectIntent_member_1_
+ *  - (old) https://googleapis.dev/nodejs/dialogflow/4.5.0/v2.SessionsClient.html
+ *  - (old) https://googleapis.dev/nodejs/dialogflow/4.5.0/v2.SessionsClient.html#detectIntent
+ *    - 🚧 After version 4.5.0, the detectIntent method is deprecated.
+ * Samples on Github: https://github.com/googleapis/nodejs-dialogflow#samples
+ *
+ * HOW TO USE?
+ * - Read REAMDE.md
+ * - Run:
+ *    node -r dotenv/config dialogflow/detectIntents.js <projectId>
+ */
 
-'use strict';
-
-// [START dialogflow_quickstart]
-
-const dialogflow = require('@google-cloud/dialogflow');
-const uuid = require('uuid');
+import { credentials } from "../credentials.js";
+import { SessionsClient } from "@google-cloud/dialogflow";
+import { v4 as uuidv4 } from "uuid";
 
 /**
  * Send a query to the dialogflow agent, and return the query result.
  * @param {string} projectId The project to be used
  */
-async function runSample(projectId = 'your-project-id') {
+async function main(projectId = "your-project-id") {
+  const location = "global";
+
   // A unique identifier for the given session
-  const sessionId = uuid.v4();
+  const sessionId = uuidv4();
 
   // Create a new session
-  const sessionClient = new dialogflow.SessionsClient();
+  const sessionClient = new SessionsClient({
+    credentials,
+    apiEndpoint: location + "-dialogflow.googleapis.com",
+  });
+
   const sessionPath = sessionClient.projectAgentSessionPath(
     projectId,
     sessionId
@@ -30,23 +44,23 @@ async function runSample(projectId = 'your-project-id') {
     queryInput: {
       text: {
         // The query to send to the dialogflow agent
-        text: 'hello',
+        text: "hello",
         // The language used by the client (en-US)
-        languageCode: 'en-US',
+        languageCode: "en-US",
       },
     },
   };
 
   // Send request and log result
   const responses = await sessionClient.detectIntent(request);
-  console.log('Detected intent');
+  console.log("Detected intent");
   const result = responses[0].queryResult;
   console.log(`  Query: ${result.queryText}`);
   console.log(`  Response: ${result.fulfillmentText}`);
   if (result.intent) {
     console.log(`  Intent: ${result.intent.displayName}`);
   } else {
-    console.log('  No intent matched.');
+    console.log("  No intent matched.");
   }
 }
 // [END dialogflow_quickstart]
@@ -65,4 +79,13 @@ if (args.length !== 1) {
   process.exit(1);
 }
 
-runSample(...args).catch(console.error);
+main(...args).catch(console.error);
+
+/*
+Example output:
+
+Detected intent
+  Query: hello
+  Response: Hi! How are you doing?
+  Intent: Default Welcome Intent
+*/

@@ -9,18 +9,14 @@ What is "options" inside ProjectsClient? Read this:
 HOW TO USE?
 - Read REAMDE.md
 - Run:
-    node -r dotenv/config resource-manager-api/listProjects.js
+    node -r dotenv/config resource-manager/listProjects.js
 */
-
-// "use strict";
 
 import { credentials, parent } from "../credentials.js";
 import { ProjectsClient } from "@google-cloud/resource-manager";
 
 async function main() {
-  const client = new ProjectsClient({
-    credentials: credentials,
-  });
+  const client = new ProjectsClient({ credentials });
 
   const request = {
     parent: parent,

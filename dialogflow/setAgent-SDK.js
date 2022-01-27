@@ -1,35 +1,30 @@
 /**
+ *
+ * SDK: https://cloud.google.com/nodejs/docs/reference/dialogflow/latest/dialogflow/v2.agentsclient#_google_cloud_dialogflow_v2_AgentsClient_setAgent_member_1_
+ *
  * HOW TO USE?
- * read README.md
- * Change parameters in .env and // Parameters
+ * - Read REAMDE.md
+ * - Run:
+ *    node -r dotenv/config dialogflow/setAgent-SDK.js <projectId> <displayName>
  */
 
-"use strict";
+import { credentials } from "../credentials.js";
+import { AgentsClient } from "@google-cloud/dialogflow";
 
-require("dotenv").config();
-
-async function main() {
-  // [START dialogflow_set_agent_sample]
-  const { AgentsClient } = require("@google-cloud/dialogflow");
-
-  // Parameters
+async function main(projectId, displayName) {
   const location = "us";
-  const displayName = "sdk_api-test";
-  const parentId = process.env.PROJECT_ID; // project_id
-  const privateKey = process.env.PRIVATE_KEY;
-  const clientEmail = process.env.CLIENT_EMAIL;
+  const parent = "projects/" + projectId + "/locations/" + location;
 
-  const parent = "projects/" + parentId + "/locations/" + location;
-
+  // https://googleapis.dev/nodejs/dialogflow/latest/google.cloud.dialogflow.v2.Agent.html
   const agent = {
-    parent: parent,
+    parent, // required
     displayName: displayName,
-    defaultLanguageCode: "en",
-    timeZone: "America/Los_Angeles",
+    timeZone: "America/Los_Angeles", // required
+    // defaultLanguageCode: "en",
   };
 
   const client = new AgentsClient({
-    credentials: { private_key: privateKey, client_email: clientEmail },
+    credentials,
     apiEndpoint: location + "-dialogflow.googleapis.com",
   });
 
@@ -37,14 +32,11 @@ async function main() {
     const request = {
       agent,
     };
-
-    // const [response] = await client.setAgent(request);
     const response = await client.setAgent(request);
     // console.log(`response: ${JSON.stringify(response, null, 2)}`);
     console.log(response);
   }
   await setAgent();
-  // [END dialogflow_set_agent_sample]
 }
 
 process.on("unhandledRejection", (err) => {
@@ -52,3 +44,25 @@ process.on("unhandledRejection", (err) => {
   process.exitCode = 1;
 });
 main(...process.argv.slice(2));
+
+/*
+Return example:
+[
+  {
+    supportedLanguageCodes: [],
+    parent: 'projects/id-of-project/locations/us',
+    displayName: 'Agent Id of Project',
+    defaultLanguageCode: 'en',
+    timeZone: 'America/Los_Angeles',
+    description: '',
+    avatarUri: '',
+    enableLogging: false,
+    matchMode: 'MATCH_MODE_UNSPECIFIED',
+    classificationThreshold: 0,
+    apiVersion: 'API_VERSION_V2',
+    tier: 'TIER_UNSPECIFIED'
+  },
+  null,
+  null
+]
+*/

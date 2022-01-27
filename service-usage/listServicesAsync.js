@@ -4,33 +4,31 @@
 What is "options" inside ServiceUsageClient? Read this:
   https://github.com/googleapis/gax-nodejs/blob/main/client-libraries.md#creating-the-client-instance
 
+
+Services enabled by default: https://cloud.google.com/service-usage/docs/enabled-service#default
+
 HOW TO USE?
 - Read REAMDE.md
 - Run:
-    node -r dotenv/config service-usage/listServicesAsync.js
+    node -r dotenv/config service-usage/listServicesAsync.js parent
+
+"parent" can be:
+  - "projects/<project-id>"
+  - "folders/<folder-id>"
+  - "organizations/<organization-id>"
 */
 
-// 'use strict';
 
-import { private_key, client_email, parent } from "../credentials.js";
+import { credentials, parent } from "../credentials.js";
 import { ServiceUsageClient } from "@google-cloud/service-usage";
 
-async function main(
-  // parent = "folders/fleet-gamma-338300", // Project to list service usage for.
-  // filter = "state:ENABLED" // Service to filter on.
-) {
-  // const parent = 'projects/my-project', // Project to list service usage for.
-  // filter = 'state:ENABLED' // Filter when listing services.
-
-  // Creates a client
-  const client = new ServiceUsageClient({
-    credentials: { private_key, client_email },
-  });
+async function main(prnt=parent) {
+  const client = new ServiceUsageClient({ credentials });
 
   // Ref of request:
   // https://cloud.google.com/nodejs/docs/reference/service-usage/latest/service-usage/protos.google.api.serviceusage.v1.ilistservicesrequest
   const request = {
-    parent,
+    parent: prnt,
     filter: "state:ENABLED",
   };
 
@@ -40,11 +38,9 @@ async function main(
     }
   }
   listServices();
-  // [END serviceusage_quickstart]
 }
 
-// main(...process.argv.slice(2)).catch((err) => {
-main().catch((err) => {
+main(...process.argv.slice(2)).catch((err) => {
   console.error(err.message);
   process.exitCode = 1;
 });

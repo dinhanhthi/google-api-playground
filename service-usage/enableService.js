@@ -1,31 +1,50 @@
 /*
-- Source: https://cloud.google.com/nodejs/docs/reference/service-usage/latest/service-usage/v1.serviceusageclient#_google_cloud_service_usage_v1_ServiceUsageClient_enableService_member_1_
+- Modified from: https://cloud.google.com/nodejs/docs/reference/service-usage/latest/service-usage/v1.serviceusageclient#_google_cloud_service_usage_v1_ServiceUsageClient_enableService_member_1_
 - Ref: the same as above
 
+Enable multiple services on a project? Use `batchEnableServices`
+(https://cloud.google.com/nodejs/docs/reference/service-usage/latest/service-usage/v1.serviceusageclient#_google_cloud_service_usage_v1_ServiceUsageClient_batchEnableServices_member_1_)
+
+NOTE THAT, this file is used for enabling only DIALOGFLOW service!
+
+----
+NOTE FROM GOOGLE
+*  The `EnableService` and `DisableService` methods currently only support
+*  projects.
+*  Enabling a service requires that the service is public or is shared with
+*  the user enabling the service.
+----
 
 HOW TO USE?
 - Read REAMDE.md
 - Run:
-    node -r dotenv/config service-usage/enableService.js
+    node -r dotenv/config service-usage/enableService.js projectId
 */
 
-import { private_key, client_email, parent } from "../credentials.js";
+import { credentials } from "../credentials.js";
 import { ServiceUsageClient } from "@google-cloud/service-usage";
 
-// Imports the Serviceusage library
-const { ServiceUsageClient } = require("@google-cloud/service-usage").v1;
+async function main(projectId) {
+  const name = `projects/${projectId}/services/dialogflow.googleapis.com`;
+  const serviceusageClient = new ServiceUsageClient({ credentials });
 
-// Instantiates a client
-const serviceusageClient = new ServiceUsageClient();
+  async function callEnableService() {
+    // https://cloud.google.com/nodejs/docs/reference/service-usage/latest/service-usage/protos.google.api.serviceusage.v1.ienableservicerequest
+    const request = { name };
 
-async function callEnableService() {
-  // Construct request
-  const request = {};
+    const [operation] = await serviceusageClient.enableService(request);
+    const [response] = await operation.promise();
+    console.log(response);
+  }
 
-  // Run request
-  const [operation] = await serviceusageClient.enableService(request);
-  const [response] = await operation.promise();
-  console.log(response);
+  callEnableService();
 }
 
-callEnableService();
+main(...process.argv.slice(2)).catch((err) => {
+  console.error(err.message);
+  process.exitCode = 1;
+});
+process.on("unhandledRejection", (err) => {
+  console.error(err.message);
+  process.exitCode = 1;
+});

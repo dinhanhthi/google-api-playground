@@ -5,28 +5,23 @@
  * Samples on Github: https://github.com/googleapis/nodejs-dialogflow#samples
  *
  * HOW TO USE?
- * In .env, set the following variables: CLIENT_EMAIL, PRIVATE_KEY
- * Have to change the parameters (location, parent)
- * Run:
- *    node -r dotenv/config dialogflow/searchAgents-SDK.js
+ * - Read REAMDE.md
+ * - Run:
+ *    node -r dotenv/config dialogflow/searchAgents-SDK.js <projectId>
  */
 
-// "use strict";
-
 // require("dotenv").config();
-import { private_key, client_email } from "../credentials.js";
+import { credentials } from "../credentials.js";
 import { AgentsClient } from "@google-cloud/dialogflow";
 
-async function main() {
-
+async function main(projectId = "-") {
   const location = "global";
   // const location = "europe-west1";
 
-  const parent = "projects/-/locations/" + location;
-  // const parent = "projects/-";
+  const parent = `projects/${projectId}/locations/${location}`;
 
   const client = new AgentsClient({
-    credentials: { private_key, client_email },
+    credentials,
     apiEndpoint: location + "-dialogflow.googleapis.com",
   });
   // const formattedParent = client.projectPath(parent);
@@ -34,12 +29,12 @@ async function main() {
   async function searchAgents() {
     const request = {
       // parent: formattedParent,
-      parent: parent,
+      parent,
     };
 
-    const options = {
-      autoPaginate: false,
-    };
+    // const options = {
+    //   autoPaginate: false,
+    // };
 
     // const [response] = await client.searchAgents(request);
     const response = await client.searchAgents(request);
@@ -59,8 +54,7 @@ process.on("unhandledRejection", (err) => {
   console.error(err.message);
   process.exitCode = 1;
 });
-
-main();
+main(...process.argv.slice(2));
 
 // only this???
 // response: {
