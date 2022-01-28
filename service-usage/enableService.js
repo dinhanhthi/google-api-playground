@@ -33,8 +33,20 @@ async function main(projectId) {
     const request = { name };
 
     const [operation] = await serviceusageClient.enableService(request);
+
+    console.log("------------")
+    console.log(operation.name); // unique name
+    console.log("------------")
+    console.log(operation.done); // true or false
+    console.log("------------")
+    console.log(operation.metadata); // current value of the metadata (often contains progress %)
+    console.log("------------")
+    console.log(operation.result); // only if operation is completed
+
     const [response] = await operation.promise();
+    console.log("response: ");
     console.log(response);
+    console.log("operation.done: ", operation.done)
   }
 
   callEnableService();
@@ -48,3 +60,27 @@ process.on("unhandledRejection", (err) => {
   console.error(err.message);
   process.exitCode = 1;
 });
+
+/*
+Return:
+
+EnableServiceResponse {
+  service: Service {
+    name: 'projects/820337555778/services/dialogflow.googleapis.com',
+    config: ServiceConfig {
+      apis: [],
+      endpoints: [],
+      monitoredResources: [],
+      name: 'dialogflow.googleapis.com',
+      title: 'Dialogflow API',
+      documentation: [Documentation],
+      quota: [Quota],
+      authentication: [Authentication],
+      usage: [Usage],
+      monitoring: [Monitoring]
+    },
+    state: 2,
+    parent: 'projects/820337555778'
+  }
+}
+*/
