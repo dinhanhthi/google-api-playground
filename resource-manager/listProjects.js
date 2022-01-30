@@ -12,15 +12,13 @@ HOW TO USE?
     node -r dotenv/config resource-manager/listProjects.js
 */
 
-import { credentials, parent } from "../credentials.js";
+import { credentials, parent as defaultParent } from "../credentials.js";
 import { ProjectsClient } from "@google-cloud/resource-manager";
 
-async function main() {
+async function main(parent = defaultParent) {
   const client = new ProjectsClient({ credentials });
 
-  const request = {
-    parent: parent,
-  };
+  const request = { parent };
 
   async function listProjects() {
     const projects = client.listProjectsAsync(request);

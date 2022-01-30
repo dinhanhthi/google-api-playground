@@ -18,14 +18,18 @@ NOTE FROM GOOGLE
 HOW TO USE?
 - Read REAMDE.md
 - Run:
-    node -r dotenv/config service-usage/enableService.js projectId
+    node -r dotenv/config service-usage/enableService.js projectId service
+
+- Services:
+    - dialogflow.googleapis.com
+    - cloudresourcemanager.googleapis.com
 */
 
 import { credentials } from "../credentials.js";
 import { ServiceUsageClient } from "@google-cloud/service-usage";
 
-async function main(projectId) {
-  const name = `projects/${projectId}/services/dialogflow.googleapis.com`;
+async function main(projectId, service='dialogflow.googleapis.com') {
+  const name = `projects/${projectId}/services/${service}`;
   const serviceusageClient = new ServiceUsageClient({ credentials });
 
   async function callEnableService() {

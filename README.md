@@ -30,12 +30,26 @@ My playground for Google's APIs.
 This section is the basic steps for you to create a service accoutn (with neccessary roles) to play with SDK's APIs which requires the access of organization / folders.
 
 1. You have to have a domain and full access to DNS.
-2. Try 1 month free [Google Workspace](https://workspace.google.com/) (from this, you will have an organization in [GCP](https://console.cloud.google.com/)). **TIP**: After 1 month, you deactivate the subsription but the things on GCP witll work!
+2. Try 1 month free [Google Workspace](https://workspace.google.com/) (from this, you will have an organization in [GCP](https://console.cloud.google.com/)).  💡 **TIP**: After 1 month, you deactivate the subsription but the things on GCP witll work!
 3. (You may need to activate again the subscription on GCP with a free 300$). Don't worry, just a test, you lose nothing from this amount.
 4. Go to [IAM](https://console.cloud.google.com/iam-admin/iam), choose your organization > ADD > paste the admin email of your organization + set roles for it (*Organization Administrator*, *Owner*, *Folder Creator*). Without this step, you cannot create any folder/project.
 5. Go to [Cloud Resource Manager](https://console.cloud.google.com/cloud-resource-manager) > Create a new folder inside your organization.
 6. Go to [APIs & Services / Credentials](https://console.cloud.google.com/projectselector2/apis/credentials) > Choose a project > Create Credentials > Service Account > Filling the information > Create and continue > Done. **Don't forget to copy the email of this service account** > Click on the link of that SA > Keys > Add key > Create a new key > JSON > Download a JSON file to your computer.
 7. Go to IAM again, this time, choose the fodler / organization you want above service account have the right to manage things > Add > Paste the email of the SA you created above > Set roles to it like *Owner, Organization Administrator, Dialogflow API Admin, Project Creator, Project Deleter, Service Usage Admin* (you can check the [list of all roles here](https://cloud.google.com/iam/docs/understanding-roles?_ga=2.200836974.-1507687642.1642666540#predefined_roles)). You can even create your own custom roles.
-8. Now, your SA has the full access you want.
-9. On your computer, create a file `.env` withe the keys like in `env.example.txt`.
-10. You're good!
+8. In order to created SA can use Resource Manager API, you have to activate it, otherwise, there will be an error like,
+
+    ```bash
+    7 PERMISSION_DENIED: Cloud Resource Manager API has not been used in project 1023630190150 before or it is disabled. Enable it by visiting https://console.developers.google.com/apis/api/cloudresourcemanager.googleapis.com/overview?project=1023630190150 then retry. If you enabled this API recently, wait a few minutes for the action to propagate to our systems and retry.
+    ```
+
+    You either use the link given in the error or using,
+
+    ```bash
+    node -r dotenv/config service-usage/enableService.js 1023630190150 cloudresourcemanager.googleapis.com
+    ```
+
+    to activate the api.
+
+9.  Now, your SA has the full access you want.
+10. On your computer, create a file `.env` withe the keys like in `env.example.txt`.
+11. You're good!
