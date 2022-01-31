@@ -8,6 +8,8 @@ HOW TO USE?
     node -r dotenv/config resource-manager/checkCreateProjectProgress.js operationId
 
     example of operation-id: "cp.8192811214189484896"
+    // Things to test (for me only):
+    node -r dotenv/config resource-manager/checkCreateProjectProgress.js cp.8776114049695473904
 */
 
 import { credentials } from "../credentials.js";

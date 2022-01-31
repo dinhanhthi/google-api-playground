@@ -15,23 +15,21 @@ async function main(projectId, displayName) {
   const location = "us";
   const parent = "projects/" + projectId + "/locations/" + location;
 
-  // https://googleapis.dev/nodejs/dialogflow/latest/google.cloud.dialogflow.v2.Agent.html
-  const agent = {
-    parent, // required
-    displayName: displayName,
-    timeZone: "America/Los_Angeles", // required
-    // defaultLanguageCode: "en",
-  };
-
   const client = new AgentsClient({
     credentials,
     apiEndpoint: location + "-dialogflow.googleapis.com",
   });
 
+  // https://googleapis.dev/nodejs/dialogflow/latest/google.cloud.dialogflow.v2.Agent.html
+  const agent = {
+    parent, // required
+    displayName,
+    timeZone: "America/Los_Angeles", // required
+    // defaultLanguageCode: "en",
+  };
+
   async function setAgent() {
-    const request = {
-      agent,
-    };
+    const request = { agent };
     const response = await client.setAgent(request);
     // console.log(`response: ${JSON.stringify(response, null, 2)}`);
     console.log(response);
