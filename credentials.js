@@ -6,7 +6,7 @@ folders/951960025600
 export const private_key = process.env.PRIVATE_KEY;
 export const client_email = process.env.CLIENT_EMAIL;
 export const folder_id = process.env.FOLDER_ID;
-export const organization_id = process.env.ORGANIZATION_ID;
+// export const organization_id = process.env.ORGANIZATION_ID;
 
 /*
 Ideta's

@@ -6,13 +6,15 @@
  * - Read REAMDE.md
  * - Run:
  *    node -r dotenv/config dialogflow/setAgent-SDK.js <projectId> <displayName>
+ * NOTE: displayName cannot contains whitespaces
  */
 
 import { credentials } from "../credentials.js";
 import { AgentsClient } from "@google-cloud/dialogflow";
 
 async function main(projectId, displayName) {
-  const location = "us";
+  // const location = "us";
+  const location = "europe-west1";
   const parent = "projects/" + projectId + "/locations/" + location;
 
   const client = new AgentsClient({
@@ -24,6 +26,7 @@ async function main(projectId, displayName) {
   const agent = {
     parent, // required
     displayName,
+    description: "An auto agent created by googleapi testing.",
     timeZone: "America/Los_Angeles", // required
     // defaultLanguageCode: "en",
   };
