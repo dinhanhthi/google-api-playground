@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/dinhanhthi/google-dialogflow-api-playground#readme",
   "dependencies": {
+    "@google-cloud/aiplatform": "^1.19.0",
     "@google-cloud/dialogflow": "^4.5.0",
     "@google-cloud/resource-manager": "^3.0.0",
     "@google-cloud/service-usage": "^1.2.1",
