@@ -38,12 +38,12 @@ async function main(text = "I love you so much!") {
   };
   const _instances = {
     data: {
-      b64: "WW91IGFyZW4ndCBraW5kLCBpIGhhdGUgeW91Lg==",
+      b64: base64encoded,
     },
   };
-  console.log("\n--------------------------\n")
-  console.log(helpers.toValue(_instances))
-  console.log("\n--------------------------\n")
+  console.log("\n--------------------------\n");
+  console.log(helpers.toValue(_instances));
+  console.log("\n--------------------------\n");
   const instance = {
     structValue: {
       fields: {
@@ -79,7 +79,6 @@ process.on("unhandledRejection", (err) => {
   process.exitCode = 1;
 });
 main(...process.argv.slice(2));
-
 
 /**
  * Examples of returns
