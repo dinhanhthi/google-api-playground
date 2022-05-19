@@ -16,6 +16,8 @@ const projectId = "ideta-ai-apis";
 const location = "europe-west1";
 const endpointId = "8340349850541359104";
 
+const labels = ["positif", "negatif", "neutre"];
+
 async function main(text = "I love you so much!") {
   const buff = new Buffer.from(text);
   const base64encoded = buff.toString("base64");
@@ -36,20 +38,28 @@ async function main(text = "I love you so much!") {
       fields: {},
     },
   };
-  const _instances = {
+
+  const _instance = {
     data: {
-      b64: base64encoded,
+      b64: "WW91IGFyZW4ndCBraW5kLCBpIGhhdGUgeW91Lg==",
     },
+    labels: ["positive", "negative", "neutral"],
   };
+
   console.log("\n--------------------------\n");
-  console.log(helpers.toValue(_instances));
+  console.log(helpers.toValue(_instance));
   console.log("\n--------------------------\n");
   const instance = {
     structValue: {
       fields: {
         data: {
           structValue: {
-            fields: { b64: { stringValue: _instances.data.b64 } },
+            fields: { b64: { stringValue: base64encoded } },
+          },
+        },
+        labels: {
+          listValue: {
+            values: labels.map((label) => ({ stringValue: label })),
           },
         },
       },
