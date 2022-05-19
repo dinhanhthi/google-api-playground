@@ -10,7 +10,7 @@
  */
 
 import { credentials } from "../credentials.js";
-import { PredictionServiceClient } from "@google-cloud/aiplatform";
+import { PredictionServiceClient, helpers } from "@google-cloud/aiplatform";
 
 const projectId = "ideta-ai-apis";
 const location = "europe-west1";
@@ -30,17 +30,6 @@ async function main(text = "I love you so much!") {
 
   const endpoint = `projects/${projectId}/locations/${location}/endpoints/${endpointId}`;
   console.log(`endpoint: ${endpoint}`);
-  // const instances = [
-  //   {
-  //     data: {
-  //       b64: base64encoded,
-  //     },
-  //   },
-  // ];
-
-  // const instances = [
-  //   JSON.parse('[{"data":{"b64":"WW91IGFyZW4ndCBraW5kLCBpIGhhdGUgeW91Lg=="}}]'),
-  // ];
 
   const parameters = {
     structValue: {
@@ -52,6 +41,9 @@ async function main(text = "I love you so much!") {
       b64: "WW91IGFyZW4ndCBraW5kLCBpIGhhdGUgeW91Lg==",
     },
   };
+  console.log("\n--------------------------\n")
+  console.log(helpers.toValue(_instances))
+  console.log("\n--------------------------\n")
   const instance = {
     structValue: {
       fields: {
@@ -65,7 +57,6 @@ async function main(text = "I love you so much!") {
   };
   const instances = [instance];
 
-  // console.log(`instances: ${JSON.stringify(instances, null, 2)}`);
   const request = {
     endpoint,
     instances,
@@ -74,11 +65,12 @@ async function main(text = "I love you so much!") {
   const [response] = await predictionServiceClient.predict(request);
 
   console.log("Predict custom trained model response");
-  console.log(`\tDeployed model id : ${response.deployedModelId}`);
+  console.log(`Deployed model id : ${response.deployedModelId}`);
   const predictions = response.predictions;
-  console.log("\tPredictions :");
+  console.log("Predictions :");
   for (const prediction of predictions) {
-    console.log(`\t\tPrediction : ${JSON.stringify(prediction)}`);
+    const decodedPrediction = helpers.fromValue(prediction);
+    console.log(`- Prediction : ${JSON.stringify(decodedPrediction)}`);
   }
 }
 
@@ -87,3 +79,13 @@ process.on("unhandledRejection", (err) => {
   process.exitCode = 1;
 });
 main(...process.argv.slice(2));
+
+
+/**
+ * Examples of returns
+ *
+ * Predict custom trained model response
+Deployed model id : 3551950323297812480
+Predictions :
+- Prediction : {"labels":["negative","neutral","positive"],"sequence":"You aren't kind, i hate you.","scores":[0.9942014217376709,0.0030435377266258,0.002755066612735391]}
+ */
