@@ -1,5 +1,9 @@
-// Run
-// node -r dotenv/config google-cloud-tasks/bull-delau-creator-gtasks.js
+/**
+ * Change .env/GTASKS_TOKEN to your own token
+ * Change project, queue, location, and webhookUrl to your own values
+ * Run
+ * node -r dotenv/config google-cloud-tasks/boomerang-creator-gtasks.js
+ */
 
 import express from "express";
 // const express = require("express");
