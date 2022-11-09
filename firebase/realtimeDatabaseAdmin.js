@@ -12,15 +12,7 @@
  *   node -r dotenv/config firebase/realtimeDatabaseAdmin.js
  */
 
-// import * as fadmin from "firebase-admin";
 import admin from "firebase-admin";
-
-// Initialize the app with a service account, granting admin privileges
-// const serviceAccount = {
-//   projectId: process.env.FIREBASE_PROJECT_ID,
-//   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-//   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Escaping for Heroku
-// };
 
 // It works
 admin.initializeApp({
@@ -28,6 +20,11 @@ admin.initializeApp({
 });
 
 // It's not working ????
+// const serviceAccount = {
+//   projectId: process.env.FIREBASE_PROJECT_ID,
+//   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+//   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"), // Escaping for Heroku
+// };
 // admin.initializeApp(
 //   {
 //     credential: admin.credential.cert(serviceAccount),
