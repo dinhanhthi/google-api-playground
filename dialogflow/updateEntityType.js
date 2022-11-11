@@ -1,15 +1,15 @@
 /**
- * Source: https://github.com/googleapis/nodejs-dialogflow/blob/94e1b7bc7e78b985bc5d03bc0351115a66ce2af1/samples/resource.js#L27
- * (found from here: https://snyk.io/advisor/npm-package/dialogflow/functions/dialogflow.EntityTypesClient -> search for "createEntityType")
  * SDK:
- *  - (modern doc) https://cloud.google.com/nodejs/docs/reference/dialogflow/latest/dialogflow/v2.entitytypesclient#_google_cloud_dialogflow_v2_EntityTypesClient_createEntityType_member_1_
+ *  - (modern doc) https://cloud.google.com/nodejs/docs/reference/dialogflow/latest/dialogflow/v2.entitytypesclient#_google_cloud_dialogflow_v2_EntityTypesClient_updateEntityType_member_1_
+ *  - (old theme doc) https://googleapis.dev/nodejs/dialogflow/4.5.0/v2.EntityTypesClient.html#updateEntityType
  *
  * HOW TO USE?
  * - Read REAMDE.md
  * - Uncomment PRIVATE_KEY AND CLIENT_EMAIL in .env file
- * - Modify "projectId", "entityType" in the request
+ * - Go to DF console -> create a new entity type -> use get list entity type to get the name
+ * - Modify "projectId", "name" in the request
  * - Run:
- *    node -r dotenv/config dialogflow/createEntityType.js
+ *    node -r dotenv/config dialogflow/updateEntityType.js
  */
 
 import { credentials } from "../credentials.js";
@@ -22,17 +22,13 @@ async function main() {
     apiEndpoint: `${location}-dialogflow.googleapis.com`,
   });
 
-  // The path to the agent the created entity type belongs to.
-  // const agentPath = entityTypesClient.projectAgentPath(credentials.projectId);
-  // /* ###Thi */ console.log('>>>> agentPath', agentPath);
-
   const projectId = "testing-1-bcpa";
-  /* ###Thi */ console.log("projectId: ", projectId);
 
-  const createEntityTypeRequest = {
+  const updateEntityTypeRequest = {
     parent: `projects/${projectId}/locations/${location}/agent`,
     entityType: {
-      displayName: "newEntityThree",
+      name: `projects/${projectId}/locations/us/agent/entityTypes/6a21d547-fbfb-4e5a-b3b4-23e55d60ac99`,
+      displayName: "newEntityThreeFromSDK",
       kind: "KIND_MAP",
       autoExpansionMode: "AUTO_EXPANSION_MODE_DEFAULT",
       entities: [{ value: "new value ss", synonyms: ["new value", "value"] }],
@@ -40,7 +36,7 @@ async function main() {
     languageCode: "en",
   };
 
-  const responses = await client.createEntityType(createEntityTypeRequest);
+  const responses = await client.updateEntityType(updateEntityTypeRequest);
   console.log(JSON.stringify(responses, null, 2));
 }
 
@@ -63,8 +59,8 @@ main();
 //         "value": "new value ss"
 //       }
 //     ],
-//     "name": "projects/testing-1-bcpa/locations/us/agent/entityTypes/91fce172-de98-4a62-81fb-e013cc1358f9",
-//     "displayName": "newEntityThree",
+//     "name": "projects/testing-1-bcpa/locations/us/agent/entityTypes/6a21d547-fbfb-4e5a-b3b4-23e55d60ac99",
+//     "displayName": "newEntityThreeFromSDK",
 //     "kind": "KIND_MAP",
 //     "autoExpansionMode": "AUTO_EXPANSION_MODE_DEFAULT",
 //     "enableFuzzyExtraction": false
