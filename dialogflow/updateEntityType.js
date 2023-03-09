@@ -7,6 +7,8 @@
  * - Read REAMDE.md
  * - Uncomment PRIVATE_KEY AND CLIENT_EMAIL in .env file
  * - Go to DF console -> create a new entity type -> use get list entity type to get the name
+ *   Ex of "parent" when using get list entity type:
+ *   "projects/testing-1-bcpa/locations/us/agent"
  * - Modify "projectId", "name" in the request
  * - Run:
  *    node -r dotenv/config dialogflow/updateEntityType.js
@@ -24,11 +26,11 @@ async function main() {
 
   const projectId = "testing-1-bcpa";
 
+  // REMARK: There is no "parent" in the request like in createEntityType!!!
   const updateEntityTypeRequest = {
-    parent: `projects/${projectId}/locations/${location}/agent`,
     entityType: {
-      name: `projects/${projectId}/locations/us/agent/entityTypes/6a21d547-fbfb-4e5a-b3b4-23e55d60ac99`,
-      displayName: "newEntityThreeFromSDK",
+      name: `projects/${projectId}/locations/us/agent/entityTypes/02191109-a497-49b0-9cf1-7b64547bb6ef`,
+      displayName: "XXXXX",
       kind: "KIND_MAP",
       autoExpansionMode: "AUTO_EXPANSION_MODE_DEFAULT",
       entities: [{ value: "new value ss", synonyms: ["new value", "value"] }],

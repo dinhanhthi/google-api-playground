@@ -1,0 +1,91 @@
+<!--
+  The same as "gsi_authorization_code_popup.html" but we want to try the same codes as in Ideta front
+  Closed but not the same: https://developers.google.com/identity/oauth2/web/guides/migration-to-gis#authorization_code_flow_examples
+
+  Remark: `.grantOfflineAccess().then(offlineCallback);` doesn't work -> we walways obtain the error
+  "Error: popup_closed_by_user". However, on Ideta, it works!
+-->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      window.addEventListener("load", (event) => {
+        console.log("page is fully loaded");
+        ngOnInit();
+      });
+    </script>
+  </head>
+  <body>
+    <script>
+      var clientAuth2;
+      function initGoogleAuthSDK(callbackFn) {
+        console.log("clientAuth2: ", clientAuth2);
+        if (!clientAuth2) {
+          console.log("window['googleSDKLoaded']: ", window["googleSDKLoaded"]);
+          window["googleSDKLoaded"] = () => {
+            console.log(
+              "window['gapi'] inside googleSDKLoaded: ",
+              window["gapi"]
+            );
+            window["gapi"].load("auth2", () => {
+              clientAuth2 = window["gapi"].auth2.init({
+                // look at the .env file and replace with your own, process.env isn't available in the browser
+                client_id: YourClientId,
+                scope:
+                  "profile" +
+                  " email" +
+                  " https://www.googleapis.com/auth/dialogflow",
+              });
+              callbackFn();
+            });
+          };
+          console.log('window["gapi"] after: ', window["gapi"]);
+          ((d, s, id) => {
+            const fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+              return;
+            }
+            const js = d.createElement(s);
+            js.id = id;
+            js.src =
+              "https://apis.google.com/js/client:platform.js?onload=googleSDKLoaded";
+            js.async = true;
+            js.defer = true;
+            fjs.parentNode.insertBefore(js, fjs);
+          })(document, "script", "google-jssdk");
+        } else {
+          callbackFn();
+        }
+      }
+
+      function grantOfflineAccess() {
+        if (clientAuth2) {
+          return clientAuth2.grantOfflineAccess().then(offlineCallback);
+        }
+        return Promise.reject("clientAuth2 is not ready");
+      }
+
+      function offlineCallback(authRes) {
+        if (authRes && authRes.code) {
+          console.log("😍 Got auth code: ", authRes.code);
+        } else {
+          console.log("💩 Failed to get auth code");
+        }
+      }
+
+      function ngOnInit() {
+        console.log("ngOnInit");
+        initGoogleAuthSDK(() => {
+          console.log("gapiOAuthReady = true");
+        });
+      }
+
+      function buttonClicked() {
+        console.log("buttonClicked");
+        grantOfflineAccess();
+      }
+    </script>
+    <button onclick="buttonClicked();">Auth DF</button>
+  </body>
+</html>

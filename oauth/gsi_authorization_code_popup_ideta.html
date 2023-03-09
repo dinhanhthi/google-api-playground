@@ -1,0 +1,95 @@
+<!-- The same as "gsi_authorization_code_popup.html" but we want to try the same codes as in Ideta front -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script>
+      window.addEventListener("load", (event) => {
+        console.log("page is fully loaded");
+        ngOnInit();
+      });
+    </script>
+  </head>
+  <body>
+    <script>
+      var clientAuth2;
+      function initGoogleAuthSDK(callbackFn) {
+        console.log("clientAuth2: ", clientAuth2);
+        if (!clientAuth2) {
+          console.log("window['googleSDKLoaded']: ", window["googleSDKLoaded"]);
+          window["googleSDKLoaded"] = () => {
+            console.log(
+              "window['google'] inside googleSDKLoaded: ",
+              window["google"]
+            );
+            clientAuth2 = window["google"].accounts.oauth2.initCodeClient({
+              // look at the .env file and replace with your own, process.env isn't available in the browser
+              client_id: YourClientId,
+              scope: [
+                "profile",
+                "email",
+                "https://www.googleapis.com/auth/dialogflow",
+              ].join(" "),
+              ux_mode: "popup",
+              // error_callback: (response) => {
+              //   console.log("👉👉👉 error: ", response);
+              // },
+            });
+            callbackFn();
+          };
+          console.log('window["google"] after: ', window["google"]);
+
+          ((d, s, id) => {
+            const fjs = d.getElementsByTagName(s)[0];
+            if (d.getElementById(id)) {
+              return;
+            }
+            const js = d.createElement(s);
+            js.setAttribute("id", id);
+            js.setAttribute("src", "https://accounts.google.com/gsi/client");
+            js.setAttribute("onload", "googleSDKLoaded()");
+            fjs.parentNode.insertBefore(js, fjs);
+          })(document, "script", "google-jssdk");
+        } else {
+          callbackFn();
+        }
+      }
+
+      function getAuthCode() {
+        return new Promise((resolve, reject) => {
+          // type of error: https://developers.google.com/identity/oauth2/web/reference/js-reference#CodeClientConfig
+          clientAuth2.error_callback = (response) => {
+            console.log("+++error: ", response);
+            reject(response);
+          };
+          clientAuth2.requestCode();
+          clientAuth2.callback = (response) => {
+            if (response.code) {
+              resolve(response.code);
+            } else {
+              reject(response);
+            }
+          };
+        });
+      }
+
+      function ngOnInit() {
+        console.log("ngOnInit");
+        initGoogleAuthSDK(() => {
+          console.log("gapiOAuthReady = true");
+        });
+      }
+
+      function buttonClicked() {
+        getAuthCode()
+          .then((code) => {
+            console.log("👉👉 code: ", code);
+          })
+          .catch((error) => {
+            console.log("👉👉 error: ", error);
+          });
+      }
+    </script>
+    <button onclick="buttonClicked();">Auth DF</button>
+  </body>
+</html>

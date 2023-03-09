@@ -1,0 +1,36 @@
+<!-- Code: https://developers.google.com/identity/oauth2/web/guides/migration-to-gis#the_new_way_2 -->
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <script
+      src="https://accounts.google.com/gsi/client"
+      onload="googleSDKLoaded()"
+      async
+      defer
+    ></script>
+  </head>
+  <body>
+    <script>
+      var client;
+      window['googleSDKLoaded'] = () => {
+        console.log("window['google'] inside googleSDKLoaded: ", window["google"]);
+        client = google.accounts.oauth2.initCodeClient({
+          // look at the .env file and replace with your own, process.env isn't available in the browser
+          client_id: YourClientId,
+          scope: ['profile', 'email', 'https://www.googleapis.com/auth/dialogflow'].join(' '),
+          ux_mode: "popup",
+          callback: (response) => {
+            console.log(`👉👉👉 code: ${response.code}`);
+          },
+        });
+      }
+      console.log('window["google"] after: ', window["google"]);
+
+      function getAuthCode() {
+        client.requestCode();
+      }
+    </script>
+    <button onclick="getAuthCode();">Auth DF</button>
+  </body>
+</html>
